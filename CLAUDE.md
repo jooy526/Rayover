@@ -1,63 +1,86 @@
-# Claude 작업 프로세스 (Rayover)
-
-> 이 파일은 Claude가 코드 작업 시 따르는 7단계 프로세스입니다.
+# 프로젝트: Rayover Design System
 
 ---
 
-## 7단계 작업 프로세스
+## 핵심 원칙 (카파시 4원칙)
 
-### 1단계 — Clarify (원칙 1: Think Before Coding)
-- 요청을 읽고 **모호한 부분이 있으면 즉시 질문**
-- 환경(Service/Admin) 명시 없으면 반드시 확인
-- 추측으로 진행하지 말 것
-
-### 2단계 — Context Gather (원칙 2: Simplicity First)
-- 기존 컴포넌트 목록 확인 (`components/` 폴더)
-- 재사용 가능한 컴포넌트가 있으면 신규 생성 금지
-- `docs/DESIGN.md`에서 관련 토큰 확인
-
-### 3단계 — Plan
-- 변경할 파일 목록 명시
-- 변경 이유를 요청과 1:1 연결
-
-### 4단계 — 코드 전 승인 필수
-- Plan을 사용자에게 제시하고 **승인 대기**
-- 승인 없이 코드 생성 금지
-
-### 5단계 — Generate (원칙 3: Surgical Changes)
-- 승인된 범위 내 파일만 수정
-- 요청하지 않은 리팩토링·포맷 변경·import 정리 금지
-- 변경된 모든 줄 = 요청과 직접 연결
-
-### 6단계 — Evaluate (원칙 4: Goal-Driven Execution)
-자체 검증 체크리스트:
-- [ ] TypeScript 타입 오류 없음
-- [ ] 하드코딩 색상/값 없음 (`var(--*)` 사용)
-- [ ] 정의된 variant 조합만 사용
-- [ ] Story 파일 존재
-- [ ] 환경 혼용 없음 (Service ↔ Admin)
-
-### 7단계 — Report
-- 변경 파일 목록과 변경 이유 요약
-- 미해결 항목은 숨기지 말고 명시
+1. **Think Before Coding** — 모호하면 먼저 질문. 추측을 사실처럼 말하지 말 것.
+2. **Simplicity First** — 기존 컴포넌트/토큰 재사용 필수. 요청하지 않은 추상화 추가 금지.
+3. **Surgical Changes** — 요청 범위 밖 리팩토링·포맷 변경·import 정리 금지.
+4. **Goal-Driven Execution** — 모든 작업은 측정 가능한 완료 조건으로 끝남.
 
 ---
 
-## 금지 사항
+## 토큰 사용 규칙
 
-| 금지 | 이유 |
+- **하드코딩 절대 금지**: `#FF5722`, `16px`, `8px` 등 직접 입력 금지
+- **CSS 변수 필수**: `var(--color-*)`, `var(--spacing-*)`, `var(--radius-*)`
+- **Semantic 우선**: `var(--color-primary-strong)` > Palette 직접 참조
+- 토큰 상세 값: `docs/DESIGN.md` 참조
+
+---
+
+## 컴포넌트 구조 (1컴포넌트 = 4파일)
+
+```
+components/[env]/[ComponentName]/
+├── ComponentName.tsx        # 컴포넌트 구현
+├── ComponentName.types.ts   # Props 타입 정의
+├── ComponentName.stories.tsx # Storybook Story
+└── index.ts                 # export
+```
+
+- `[env]`: `common` / `service` / `admin`
+- **Service(모바일)**: `/common` + `/service` 폴더만
+- **Admin(PC)**: `/common` + `/admin` 폴더만
+- **환경 혼용 절대 금지**
+
+---
+
+## Figma 충실도 규칙
+
+### Surgical (원칙 3 연결)
+- Figma 원본 텍스트/variant만 사용
+- 자의적 텍스트 변경·variant 추가 금지
+- 변경된 모든 줄이 요청과 1:1 연결되어야 함
+
+### Simplicity (원칙 2 연결)
+- instance swap = prop으로 처리
+- 단일 컴포넌트 + props/children 조합 (variant별 파일 분리 금지)
+- 컴포넌트 너비: `w-full` + 부모 padding으로 제어
+
+### Storybook
+- Figma 컴포넌트 단위로만 Story 작성
+- 모든 variant/state 커버 필수
+- 컴포넌트 파일 저장 시 Story 없으면 경고 (hook)
+
+---
+
+## 에이전트 위임
+
+| 작업 | 에이전트 |
 |---|---|
-| 승인 없이 코드 작성 | 원칙 1 위반 |
-| 요청 범위 밖 파일 수정 | 원칙 3 위반 |
-| "완료"라고 했지만 검증 미통과 | 원칙 4 위반 |
-| Hex/px 하드코딩 | 토큰 규칙 위반 |
-| Admin ↔ Service 컴포넌트 혼용 | 환경 규칙 위반 |
-| 유사 컴포넌트 신규 생성 | 원칙 2 위반 |
+| Figma URL → 코드 구현 | `.claude/agents/figma-implementer.md` |
+| 토큰 불일치 감지·수정 | `.claude/agents/token-checker.md` |
+| 빌드/타입/토큰/Story 검사 | `.claude/agents/design-qa.md` |
+| 코드 전체 하드코딩 탐지 | `.claude/agents/design-reviewer.md` |
 
 ---
 
-## 실패 처리
+## 빌드 명령어
 
-- 구현 실패 시 **2회까지 재시도**
-- 2회 후에도 실패 시: 숨기지 말고 보고 + 대안 제시
-- 절대 "완료됐습니다" 후 오류 숨기기 금지
+```bash
+npm run dev          # 개발 서버
+npm run build        # 프로덕션 빌드
+npm run storybook    # Storybook 실행
+npm run type-check   # TypeScript 검사
+npm run lint         # ESLint
+```
+
+---
+
+## 참고 문서
+
+- 디자인 토큰·브랜드 가이드: `docs/DESIGN.md`
+- 컴포넌트 상세 규칙: `components/[env]/[name]/README.md`
+- Figma: https://www.figma.com/design/A64u6OZlUg4HTUWfZ4J0d7/
