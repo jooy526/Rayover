@@ -1,0 +1,11 @@
+{
+  "radius": {
+    "none": { "value": "0",    "type": "dimension" },
+    "sm":   { "value": "4",    "type": "dimension" },
+    "md":   { "value": "8",    "type": "dimension" },
+    "lg":   { "value": "12",   "type": "dimension" },
+    "xl":   { "value": "16",   "type": "dimension" },
+    "2xl":  { "value": "20",   "type": "dimension" },
+    "full": { "value": "9999", "type": "dimension" }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "color": {
+    "primary":         { "value": "{color.orange.5}", "type": "color" },
+    "primary-dark":    { "value": "{color.orange.6}", "type": "color" },
+    "primary-light":   { "value": "{color.orange.3}", "type": "color" },
+    "primary-surface": { "value": "{color.orange.1}", "type": "color" },
+    "label": {
+      "normal":      { "value": "{color.gray.7}", "type": "color" },
+      "strong":      { "value": "{color.black}",  "type": "color" },
+      "neutral":     { "value": "{color.gray.6}", "type": "color" },
+      "alternative": { "value": "{color.gray.5}", "type": "color" },
+      "disable":     { "value": "{color.gray.4}", "type": "color" }
+    },
+    "background": {
+      "normal":      { "value": "{color.white}",  "type": "color" },
+      "alternative": { "value": "{color.gray.1}", "type": "color" },
+      "neutral":     { "value": "{color.gray.2}", "type": "color" }
+    },
+    "line": {
+      "normal":      { "value": "{color.gray.4}", "type": "color" },
+      "alternative": { "value": "{color.gray.2}", "type": "color" },
+      "strong":      { "value": "{color.gray.6}", "type": "color" }
+    },
+    "status": {
+      "positive": { "value": "{color.green}",  "type": "color" },
+      "negative": { "value": "{color.red}",    "type": "color" },
+      "caution":  { "value": "{color.yellow}", "type": "color" },
+      "info":     { "value": "{color.blue}",   "type": "color" }
+    },
+    "static": {
+      "white": { "value": "{color.white}", "type": "color" },
+      "black": { "value": "{color.black}", "type": "color" }
+    }
+  }
+}
